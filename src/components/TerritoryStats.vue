@@ -1,19 +1,26 @@
 <script setup>
-import { ref, watch } from 'vue'
-import { territoryMetadata, territories, visitedTerritories } from '../models/territory_data'
+import { ref, watch } from 'vue';
+import {
+  territoryMetadata,
+  territories,
+  visitedTerritories,
+} from '../models/territory_data';
 
-const visitedCount = ref(visitedTerritories.visitedCount)
-const visitedPercentage = ref(visitedTerritories.visitedPercentage)
+const visitedCount = ref(visitedTerritories.visitedCount);
+const visitedPercentage = ref(visitedTerritories.visitedPercentage);
 
 watch(visitedTerritories, () => {
-  visitedCount.value = visitedTerritories.visitedCount
-  visitedPercentage.value = visitedTerritories.visitedPercentage
-})
+  visitedCount.value = visitedTerritories.visitedCount;
+  visitedPercentage.value = visitedTerritories.visitedPercentage;
+});
 </script>
 
 <template>
   <section id="territory-stats">
-    <div class="container" :style="'--progress:' + visitedPercentage + '%;'">
+    <div
+      class="container"
+      :style="'--progress:' + visitedPercentage + '%;'"
+    >
       <h1>Your Progress</h1>
       <div>
         <span class="highlight">{{ visitedCount }}</span>

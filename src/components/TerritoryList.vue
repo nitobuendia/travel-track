@@ -1,27 +1,36 @@
 <script setup>
-import { territories, visitedTerritories } from '../models/territory_data'
+import { territories, visitedTerritories } from '../models/territory_data';
 
-console.log(visitedTerritories)
+console.log(visitedTerritories);
 const toggleVisitedTerritory = (territoryCode) => {
-  const visitedState = visitedTerritories[territoryCode]
-  console.log(visitedState, territoryCode)
-  visitedTerritories[territoryCode] = !visitedState
-}
+  const visitedState = visitedTerritories[territoryCode];
+  console.log(visitedState, territoryCode);
+  visitedTerritories[territoryCode] = !visitedState;
+};
 </script>
 
 <template>
   <section id="territory-list">
-    <template v-for="territory of territories" :key="territory.id">
+    <template
+      v-for="territory of territories"
+      :key="territory.id"
+    >
       <div
         :id="`territory-${territory.code}`"
         class="territory"
         @click="toggleVisitedTerritory(territory.code)"
       >
         <span class="territory-name">{{ territory.name }}</span>
-        <span v-if="visitedTerritories[territory.code]" class="territory-visited-status visited"
+        <span
+          v-if="visitedTerritories[territory.code]"
+          class="territory-visited-status visited"
           >Visited</span
         >
-        <span v-else class="territory-visited-status not-visited">Not Visited</span>
+        <span
+          v-else
+          class="territory-visited-status not-visited"
+          >Not Visited</span
+        >
       </div>
     </template>
   </section>

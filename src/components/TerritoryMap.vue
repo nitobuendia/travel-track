@@ -87,15 +87,15 @@ const drawMapOnCanvas = (canvas, dataMap) => {
     const territoryId = geometry.id
     const territoryCode = territoryMap[territoryId]
     return !visitedTerritories[territoryCode]
-  })
+  });
   drawFeatures(context, path, dataMap, nonVisitedDataMap, {
     fillStyle: '#000000'
-  })
+  });
 
   drawFeatures(context, path, dataMap, nonVisitedDataMap, {
     strokeStyle: '#ffffff',
     lineWidth: '0.7'
-  })
+  });
 }
 
 let dataMap
@@ -109,19 +109,23 @@ const loadDataMap = async () => {
 }
 
 onMounted(async () => {
-  const canvas = canvasElement.value
-  await loadDataMap()
+  const canvas = canvasElement.value;
+  await loadDataMap();
 
   drawMapOnCanvas(canvas, dataMap)
   watch(visitedTerritories, () => {
-    drawMapOnCanvas(canvas, dataMap)
+    drawMapOnCanvas(canvas, dataMap);
   })
 })
 </script>
 
 <template>
   <section id="territory-map">
-    <canvas ref="canvasElement" width="960" height="600"></canvas>
+    <canvas
+      ref="canvasElement"
+      width="960"
+      height="600"
+    ></canvas>
   </section>
 </template>
 
