@@ -16,6 +16,17 @@ const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
   svg.appendChild(pathElement);
 };
 
+const drawTerritories = (svg, path, dataMap, dataFeature, attributes) => {
+  const geometryType = dataFeature.type;
+  for (const geometry of dataFeature.geometries) {
+    const territoryGeometry = {
+      'type': geometryType,
+      'geometries': [geometry],
+    };
+    drawFeatures(svg, path, dataMap, territoryGeometry, attributes);
+  }
+};
+
 const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
   const outline = { type: 'Sphere' };
 
@@ -40,7 +51,7 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
     return visitedTerritories[territoryCode];
   });
 
-  drawFeatures(svg, path, dataMap, visitedDataMap, {
+  drawTerritories(svg, path, dataMap, visitedDataMap, {
     'stroke': '#ffffff',
     'fill': '#5ebe74',
     'stroke-width': '0.7',
