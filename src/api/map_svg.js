@@ -2,7 +2,7 @@
 import * as d3_geo from 'd3-geo';
 import { default as map_generic } from './map_generic';
 
-const drawMapOnSvg = (svg, dataMap) => {
+const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
   const outline = { type: 'Sphere' };
 
   const width = parseInt(svg.getAttribute('width'));

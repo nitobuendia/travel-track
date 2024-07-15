@@ -22,19 +22,22 @@ onMounted(async () => {
 
   const dataMap = await map_generic.loadJsonDataMap(map_generic.WORLD_MAP);
 
+  let drawMap;
+  let drawElement;
   if (mapType === 'svg') {
+    drawMap = map_svg.drawMapOnSvg
+    drawElement = svg;
     canvas.parentNode.removeChild(canvas);
-    map_svg.drawMapOnSvg(svg, dataMap);
-    watch(visitedTerritories, () => {
-      map_svg.drawMapOnSvg(svg, dataMap);
-    });
   } else { // if (mapType === 'canvas')
+    drawMap = map_canvas.drawMapOnCanvas;
+    drawElement = canvas;
     svg.parentNode.removeChild(svg);
-    map_canvas.drawMapOnCanvas(canvas, dataMap, territoryMap, visitedTerritories);
-    watch(visitedTerritories, () => {
-      map_canvas.drawMapOnCanvas(canvas, dataMap, territoryMap, visitedTerritories);
-    });
   }
+
+  drawMap(drawElement, dataMap, territoryMap, visitedTerritories);
+  watch(visitedTerritories, () => {
+    drawMap(drawElement, dataMap, territoryMap, visitedTerritories);
+  });
 });
 </script>
 
