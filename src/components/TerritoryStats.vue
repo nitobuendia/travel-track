@@ -4,7 +4,7 @@ import {
   territoryMetadata,
   territories,
   visitedTerritories,
-} from '../models/territory_data';
+} from '../store/territory_data';
 
 const visitedCount = ref(visitedTerritories.visitedCount);
 const visitedPercentage = ref(visitedTerritories.visitedPercentage);

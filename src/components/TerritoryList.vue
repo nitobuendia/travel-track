@@ -1,5 +1,5 @@
 <script setup>
-import { territories, visitedTerritories } from '../models/territory_data';
+import { territories, visitedTerritories } from '../store/territory_data';
 
 console.log(visitedTerritories);
 const toggleVisitedTerritory = (territoryCode) => {

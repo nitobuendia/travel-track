@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { territories, visitedTerritories } from '../models/territory_data';
+import { territories, visitedTerritories } from '../store/territory_data';
 
 import * as d3_geo from 'd3-geo';
 import * as d3_fetch from 'd3-fetch';
