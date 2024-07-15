@@ -1,10 +1,15 @@
 
 import * as d3_geo from 'd3-geo';
+import * as topojson from 'topojson-client';
 import { default as map_generic } from './map_generic';
 
-const drawFeatures = (svg, path, dataMap, attributes) => {
+const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
+  const dPath = dataFeature ?
+    path(topojson.feature(dataMap, dataFeature)) :
+    path(dataMap);
+
   const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  pathElement.setAttribute('d', path(dataMap));
+  pathElement.setAttribute('d', dPath);
   for (const [attributeName, attributeValue] of Object.entries(attributes)) {
     pathElement.setAttribute(attributeName, attributeValue);
   }
@@ -23,9 +28,22 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
 
   const path = d3_geo.geoPath().projection(projection);
 
-  drawFeatures(svg, path, outline, {
+  drawFeatures(svg, path, outline, null, {
     'stroke': '#ffffff',
     'fill': 'none',
+  });
+
+  const visitedDataMap = { ...dataMap.objects.countries };
+  visitedDataMap.geometries = visitedDataMap.geometries.filter((geometry) => {
+    const territoryId = geometry.id;
+    const territoryCode = territoryMap[territoryId];
+    return visitedTerritories[territoryCode];
+  });
+
+  drawFeatures(svg, path, dataMap, visitedDataMap, {
+    'stroke': '#ffffff',
+    'fill': '#5ebe74',
+    'stroke-width': '0.7',
   });
 };
 
