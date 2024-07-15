@@ -25,7 +25,6 @@ const drawFeatures = (context, path, dataMap, dataFeature, attributes) => {
 };
 
 const drawMapOnCanvas = (canvas, dataMap, territoryMap, visitedTerritories) => {
-  // const mesh = topojson.mesh(dataMap);
   const outline = { type: 'Sphere' };
 
   const context = canvas.getContext('2d');
