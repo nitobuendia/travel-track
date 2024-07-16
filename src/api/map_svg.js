@@ -2,9 +2,10 @@
 import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
 import { default as map_generic } from './map_generic';
-import { territoryMetadata } from '../store/territory_data';
 
 const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
+  const gPath = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
   const dPath = dataFeature ?
     path(topojson.feature(dataMap, dataFeature)) :
     path(dataMap);
@@ -12,9 +13,22 @@ const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
   const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   pathElement.setAttribute('d', dPath);
   for (const [attributeName, attributeValue] of Object.entries(attributes)) {
+    if (['click', 'hover'].includes(attributeName)) {
+      pathElement.addEventListener(attributeName, attributeValue);
+      continue;
+    }
+    if (attributeName === 'title') {
+      pathElement.setAttribute('alt', attributeValue);
+      const pathTitle = document.createElement('title');
+      pathTitle.innerText = attributeValue;
+      gPath.appendChild(pathTitle);
+    }
     pathElement.setAttribute(attributeName, attributeValue);
   }
-  svg.appendChild(pathElement);
+
+
+  gPath.appendChild(pathElement);
+  svg.appendChild(gPath);
 };
 
 const drawTerritories = (svg, path, dataMap, dataFeature, territoryMap, attributes) => {
@@ -37,6 +51,14 @@ const drawTerritories = (svg, path, dataMap, dataFeature, territoryMap, attribut
 };
 
 const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
+  const clickTerritoryHandler = (event) => {
+    const clickedTerritory = event.target;
+    const territoryCode = clickedTerritory.getAttribute('title');
+
+    const visitedState = visitedTerritories[territoryCode];
+    visitedTerritories[territoryCode] = !visitedState;
+  };
+
   const outline = { type: 'Sphere' };
 
   const width = parseInt(svg.getAttribute('width'));
@@ -61,8 +83,9 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
   });
 
   drawTerritories(svg, path, dataMap, visitedDataMap, territoryMap, {
-    'stroke': '#ffffff',
+    'click': clickTerritoryHandler,
     'fill': '#5ebe74',
+    'stroke': '#ffffff',
     'stroke-width': '0.7',
   });
 
@@ -76,8 +99,9 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
   );
 
   drawTerritories(svg, path, dataMap, nonVisitedDataMap, territoryMap, {
-    'stroke': '#ffffff',
+    'click': clickTerritoryHandler,
     'fill': '#000000',
+    'stroke': '#ffffff',
     'stroke-width': '0.7',
   });
 };
