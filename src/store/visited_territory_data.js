@@ -28,11 +28,13 @@ class WorldTerritoryHandler {
     } else {
       this.deleteProperty(territories, key);
     }
+    return true;  // Successful. Regardless of value;
   }
 
   deleteProperty(territories, key) {
     delete territories[key];
     localStorage.setItem(_LOCAL_STORAGE_KEY, JSON.stringify(territories));
+    return true;  // Successful. Regardless of value;
   }
 }
 
