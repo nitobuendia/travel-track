@@ -3,14 +3,14 @@ import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
 import { default as map_generic } from './map_generic';
 
-const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
-  const gPath = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+const _SVG_NS_URI = 'http://www.w3.org/2000/svg';
 
+const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
   const dPath = dataFeature ?
     path(topojson.feature(dataMap, dataFeature)) :
     path(dataMap);
 
-  const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  const pathElement = document.createElementNS(_SVG_NS_URI, 'path');
   pathElement.setAttribute('d', dPath);
   for (const [attributeName, attributeValue] of Object.entries(attributes)) {
     if (['click', 'hover'].includes(attributeName)) {
@@ -19,16 +19,14 @@ const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
     }
     if (attributeName === 'title') {
       pathElement.setAttribute('alt', attributeValue);
-      const pathTitle = document.createElement('title');
-      pathTitle.innerText = attributeValue;
-      gPath.appendChild(pathTitle);
+      const pathTitle = document.createElementNS(_SVG_NS_URI, 'title');
+      pathTitle.textContent = attributeValue;
+      pathElement.appendChild(pathTitle);
     }
     pathElement.setAttribute(attributeName, attributeValue);
   }
 
-
-  gPath.appendChild(pathElement);
-  svg.appendChild(gPath);
+  svg.appendChild(pathElement);
 };
 
 const drawTerritories = (svg, path, dataMap, dataFeature, territoryMap, attributes) => {
