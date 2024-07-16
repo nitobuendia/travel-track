@@ -1,6 +1,8 @@
 
 import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
+import { territoriesById } from '../store/territory_data';
+import { visitedTerritories } from '../store/visited_territory_data';
 import { default as map_generic } from './map_generic';
 
 const drawFeatures = (context, path, dataMap, dataFeature, attributes) => {
@@ -24,7 +26,7 @@ const drawFeatures = (context, path, dataMap, dataFeature, attributes) => {
   context.restore();
 };
 
-const drawMapOnCanvas = (canvas, dataMap, territoryMap, visitedTerritories) => {
+const drawMapOnCanvas = (canvas, dataMap) => {
   const outline = { type: 'Sphere' };
 
   const context = canvas.getContext('2d');
@@ -45,9 +47,13 @@ const drawMapOnCanvas = (canvas, dataMap, territoryMap, visitedTerritories) => {
 
   const visitedDataMap = { ...dataMap.objects.countries };
   visitedDataMap.geometries = visitedDataMap.geometries.filter((geometry) => {
-    const territoryId = geometry.id;
-    const territoryCode = territoryMap[territoryId];
-    return visitedTerritories[territoryCode];
+    const territory = territoriesById[geometry.id];
+    if (!territory) {
+      console.warn(
+        `Territory id ${geometry.id} not found in the territory list.`);
+      return false;
+    }
+    return !!visitedTerritories[territory.code];
   });
 
   drawFeatures(context, path, dataMap, visitedDataMap, {
@@ -62,9 +68,13 @@ const drawMapOnCanvas = (canvas, dataMap, territoryMap, visitedTerritories) => {
   const nonVisitedDataMap = { ...dataMap.objects.countries };
   nonVisitedDataMap.geometries = nonVisitedDataMap.geometries.filter(
     (geometry) => {
-      const territoryId = geometry.id;
-      const territoryCode = territoryMap[territoryId];
-      return !visitedTerritories[territoryCode];
+      const territory = territoriesById[geometry.id];
+      if (!territory) {
+        console.warn(
+          `Territory id ${geometry.id} not found in the territory list.`);
+        return true;
+      }
+      return !visitedTerritories[territory.code];
     }
   );
 

@@ -1,6 +1,8 @@
 
 import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
+import { territoriesById } from '../store/territory_data';
+import { visitedTerritories } from '../store/visited_territory_data';
 import { default as map_generic } from './map_generic';
 
 const _SVG_NS_URI = 'http://www.w3.org/2000/svg';
@@ -29,7 +31,7 @@ const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
   svg.appendChild(pathElement);
 };
 
-const drawTerritories = (svg, path, dataMap, dataFeature, territoryMap, attributes) => {
+const drawTerritories = (svg, path, dataMap, dataFeature, attributes) => {
   const geometryType = dataFeature.type;
   for (const geometry of dataFeature.geometries) {
     const territoryGeometry = {
@@ -37,22 +39,37 @@ const drawTerritories = (svg, path, dataMap, dataFeature, territoryMap, attribut
       'geometries': [geometry],
     };
 
-    const territoryId = geometry.id;
-    const territoryCode = territoryMap[territoryId];
-    const territoryAttributes = {
-      ...attributes,
-      'title': territoryCode,
-    };
+    const territoryAttributes = { ...attributes };
+
+    if (geometry.id) {
+      territoryAttributes['id'] = geometry.id;
+    }
+
+    const territory = territoriesById[geometry.id];
+    if (territory) {
+      territoryAttributes['title'] = territory.name;
+    } else {
+      territoryAttributes['title'] = geometry.properties.name;
+    }
 
     drawFeatures(svg, path, dataMap, territoryGeometry, territoryAttributes);
   }
 };
 
-const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
+const drawMapOnSvg = (svg, dataMap) => {
   const clickTerritoryHandler = (event) => {
     const clickedTerritory = event.target;
-    const territoryCode = clickedTerritory.getAttribute('title');
-
+    const territoryId = clickedTerritory.getAttribute('id');
+    if (!territoryId) {
+      console.warn('Clicked territory is not in the database.');
+      return;
+    }
+    const territory = territoriesById[territoryId];
+    if (!territory) {
+      console.warn(`Territory id ${territoryId} is not in the database.`);
+      return;
+    }
+    const territoryCode = territory.code;
     const visitedState = visitedTerritories[territoryCode];
     visitedTerritories[territoryCode] = !visitedState;
   };
@@ -75,12 +92,16 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
 
   const visitedDataMap = { ...dataMap.objects.countries };
   visitedDataMap.geometries = visitedDataMap.geometries.filter((geometry) => {
-    const territoryId = geometry.id;
-    const territoryCode = territoryMap[territoryId];
-    return visitedTerritories[territoryCode];
+    const territory = territoriesById[geometry.id];
+    if (!territory) {
+      console.warn(
+        `Territory id ${geometry.id} not found in the territory list.`);
+      return false;
+    }
+    return !!visitedTerritories[territory.code];
   });
 
-  drawTerritories(svg, path, dataMap, visitedDataMap, territoryMap, {
+  drawTerritories(svg, path, dataMap, visitedDataMap, {
     'click': clickTerritoryHandler,
     'fill': '#5ebe74',
     'stroke': '#ffffff',
@@ -90,13 +111,17 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
   const nonVisitedDataMap = { ...dataMap.objects.countries };
   nonVisitedDataMap.geometries = nonVisitedDataMap.geometries.filter(
     (geometry) => {
-      const territoryId = geometry.id;
-      const territoryCode = territoryMap[territoryId];
-      return !visitedTerritories[territoryCode];
+      const territory = territoriesById[geometry.id];
+      if (!territory) {
+        console.warn(
+          `Territory id ${geometry.id} not found in the territory list.`);
+        return true;
+      }
+      return !visitedTerritories[territory.code];
     }
   );
 
-  drawTerritories(svg, path, dataMap, nonVisitedDataMap, territoryMap, {
+  drawTerritories(svg, path, dataMap, nonVisitedDataMap, {
     'click': clickTerritoryHandler,
     'fill': '#000000',
     'stroke': '#ffffff',

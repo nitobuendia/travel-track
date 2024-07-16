@@ -1,16 +1,10 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { territoriesSet } from '../store/territory_data';
 import { visitedTerritories } from '../store/visited_territory_data';
 
 import {default as map_svg} from '../api/map_svg';
 import {default as map_generic} from '../api/map_generic';
 import {default as map_canvas} from '../api/map_canvas';
-
-const territoryMap = {};
-for (const territory of territoriesSet) {
-  territoryMap[territory.id] = territory.code;
-}
 
 const canvasElement = ref();
 const svgElement = ref();
@@ -35,9 +29,9 @@ onMounted(async () => {
     svg.parentNode.removeChild(svg);
   }
 
-  drawMap(drawElement, dataMap, territoryMap, visitedTerritories);
+  drawMap(drawElement, dataMap);
   watch(visitedTerritories, () => {
-    drawMap(drawElement, dataMap, territoryMap, visitedTerritories);
+    drawMap(drawElement, dataMap);
   });
 });
 </script>
