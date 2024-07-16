@@ -1,10 +1,8 @@
 <script setup>
 import { territories, visitedTerritories } from '../store/territory_data';
 
-console.log(visitedTerritories);
 const toggleVisitedTerritory = (territoryCode) => {
   const visitedState = visitedTerritories[territoryCode];
-  console.log(visitedState, territoryCode);
   visitedTerritories[territoryCode] = !visitedState;
 };
 </script>
