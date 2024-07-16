@@ -2,6 +2,7 @@
 import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
 import { default as map_generic } from './map_generic';
+import { territoryMetadata } from '../store/territory_data';
 
 const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
   const dPath = dataFeature ?
@@ -16,14 +17,22 @@ const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
   svg.appendChild(pathElement);
 };
 
-const drawTerritories = (svg, path, dataMap, dataFeature, attributes) => {
+const drawTerritories = (svg, path, dataMap, dataFeature, territoryMap, attributes) => {
   const geometryType = dataFeature.type;
   for (const geometry of dataFeature.geometries) {
     const territoryGeometry = {
       'type': geometryType,
       'geometries': [geometry],
     };
-    drawFeatures(svg, path, dataMap, territoryGeometry, attributes);
+
+    const territoryId = geometry.id;
+    const territoryCode = territoryMap[territoryId];
+    const territoryAttributes = {
+      ...attributes,
+      'title': territoryCode,
+    };
+
+    drawFeatures(svg, path, dataMap, territoryGeometry, territoryAttributes);
   }
 };
 
@@ -51,9 +60,24 @@ const drawMapOnSvg = (svg, dataMap, territoryMap, visitedTerritories) => {
     return visitedTerritories[territoryCode];
   });
 
-  drawTerritories(svg, path, dataMap, visitedDataMap, {
+  drawTerritories(svg, path, dataMap, visitedDataMap, territoryMap, {
     'stroke': '#ffffff',
     'fill': '#5ebe74',
+    'stroke-width': '0.7',
+  });
+
+  const nonVisitedDataMap = { ...dataMap.objects.countries };
+  nonVisitedDataMap.geometries = nonVisitedDataMap.geometries.filter(
+    (geometry) => {
+      const territoryId = geometry.id;
+      const territoryCode = territoryMap[territoryId];
+      return !visitedTerritories[territoryCode];
+    }
+  );
+
+  drawTerritories(svg, path, dataMap, nonVisitedDataMap, territoryMap, {
+    'stroke': '#ffffff',
+    'fill': '#000000',
     'stroke-width': '0.7',
   });
 };
