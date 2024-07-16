@@ -1,5 +1,6 @@
 <script setup>
-import { territories, visitedTerritories } from '../store/territory_data';
+import { territoriesSet } from '../store/territory_data';
+import { visitedTerritories } from '../store/visited_territory_data';
 
 const toggleVisitedTerritory = (territoryCode) => {
   const visitedState = visitedTerritories[territoryCode];
@@ -10,7 +11,7 @@ const toggleVisitedTerritory = (territoryCode) => {
 <template>
   <section id="territory-list">
     <template
-      v-for="territory of territories"
+      v-for="territory of territoriesSet"
       :key="territory.id"
     >
       <div

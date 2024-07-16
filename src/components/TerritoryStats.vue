@@ -1,10 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
-import {
-  territoryMetadata,
-  territories,
-  visitedTerritories,
-} from '../store/territory_data';
+import { territoryMetadata } from '../store/territory_data';
+import { visitedTerritories } from '../store/visited_territory_data';
 
 const visitedCount = ref(visitedTerritories.visitedCount);
 const visitedPercentage = ref(visitedTerritories.visitedPercentage);
@@ -25,7 +22,7 @@ watch(visitedTerritories, () => {
       <div>
         <span class="highlight">{{ visitedCount }}</span>
         /
-        {{ territories.size }}
+        {{ territoryMetadata.size }}
         <br />
         <span class="subtitle">{{ territoryMetadata.memberName }}</span>
       </div>

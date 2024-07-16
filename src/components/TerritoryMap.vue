@@ -1,13 +1,14 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { territories, visitedTerritories } from '../store/territory_data';
+import { territoriesSet } from '../store/territory_data';
+import { visitedTerritories } from '../store/visited_territory_data';
 
 import {default as map_svg} from '../api/map_svg';
 import {default as map_generic} from '../api/map_generic';
 import {default as map_canvas} from '../api/map_canvas';
 
 const territoryMap = {};
-for (const territory of territories) {
+for (const territory of territoriesSet) {
   territoryMap[territory.id] = territory.code;
 }
 
