@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue';
 import { territoryMetadata } from '../store/territory_data';
 import { visitedTerritories } from '../store/visited_territory_data';
+import PinComponent from './PinComponent.vue';
 
 const visitedCount = ref(visitedTerritories.visitedCount);
 const visitedPercentage = ref(visitedTerritories.visitedPercentage);
@@ -18,6 +19,7 @@ watch(visitedTerritories, () => {
       class="container"
       :style="'--progress:' + visitedPercentage + '%;'"
     >
+      <PinComponent />
       <h1>Your Progress</h1>
       <div>
         <span class="highlight">{{ visitedCount }}</span>
@@ -42,12 +44,12 @@ watch(visitedTerritories, () => {
   justify-content: center;
 }
 
-#territory-stats.sticky {
+#territory-stats:has(.sticky) {
   position: sticky;
   top: 0;
 }
 
-.sticky + #territory-stats.sticky {
+*:has(.sticky) + #territory-stats:has(.sticky) {
   top: 500px;
 }
 

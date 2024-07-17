@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import { visitedTerritories } from '../store/visited_territory_data';
+import PinComponent from './PinComponent.vue';
 
 import {default as map_svg} from '../api/map_svg';
 import {default as map_generic} from '../api/map_generic';
@@ -38,6 +39,7 @@ onMounted(async () => {
 
 <template>
   <section id="territory-map">
+    <PinComponent />
     <canvas
       ref="canvasElement"
       width="960"
@@ -57,7 +59,7 @@ onMounted(async () => {
   text-align: center;
 }
 
-#territory-map.sticky {
+#territory-map:has(.sticky) {
   background: var(--color-dark-gray);
   position: sticky;
   top: 0;
