@@ -1,14 +1,20 @@
 import { reactive } from 'vue';
-import { territoryMetadata } from './territory_data';
+import { territoriesByCode, territoryMetadata } from './territory_data';
 
 const _LOCAL_STORAGE_KEY = 'travel-track-visited-territories';
 const visitedTerritoriesCache = localStorage.getItem(_LOCAL_STORAGE_KEY);
 const visitedTerritories = visitedTerritoriesCache
   ? JSON.parse(visitedTerritoriesCache)
   : {};
+
 const visitedTerritoriesEntries = Object.entries(visitedTerritories);
 for (const [territoryCode, territoryState] of visitedTerritoriesEntries) {
   if (!territoryState) delete visitedTerritories[territoryCode];
+  // Prune territories that are not on the original map.
+  // This helps in cleaning up data generated from bugs or obsolete territories.
+  if (!territoriesByCode[territoryCode]) {
+    delete visitedTerritories[territoryCode];
+  }
 }
 
 class WorldTerritoryHandler {
