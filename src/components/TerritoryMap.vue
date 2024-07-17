@@ -44,7 +44,6 @@ onMounted(async () => {
       height="600"
     ></canvas>
     <svg
-      stlye="display: none"
       ref="svgElement"
       width="960"
       height="600"
