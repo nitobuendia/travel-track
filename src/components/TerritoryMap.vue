@@ -7,11 +7,12 @@ import {default as map_svg} from '../api/map_svg';
 import {default as map_generic} from '../api/map_generic';
 import {default as map_canvas} from '../api/map_canvas';
 
+const MAP_TYPE = 'svg';
+
 const canvasElement = ref();
 const svgElement = ref();
 
 onMounted(async () => {
-  const mapType = 'svg';
 
   const canvas = canvasElement.value;
   const svg = svgElement.value;
@@ -20,11 +21,11 @@ onMounted(async () => {
 
   let drawMap;
   let drawElement;
-  if (mapType === 'svg') {
+  if (MAP_TYPE === 'svg') {
     drawMap = map_svg.drawMapOnSvg
     drawElement = svg;
     canvas.parentNode.removeChild(canvas);
-  } else { // if (mapType === 'canvas')
+  } else { // if (MAP_TYPE === 'canvas')
     drawMap = map_canvas.drawMapOnCanvas;
     drawElement = canvas;
     svg.parentNode.removeChild(svg);
