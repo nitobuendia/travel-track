@@ -34,13 +34,13 @@ class WorldTerritoryHandler {
     } else {
       this.deleteProperty(territories, key);
     }
-    return true;  // Successful. Regardless of value;
+    return true; // Successful. Regardless of value;
   }
 
   deleteProperty(territories, key) {
     delete territories[key];
     localStorage.setItem(_LOCAL_STORAGE_KEY, JSON.stringify(territories));
-    return true;  // Successful. Regardless of value;
+    return true; // Successful. Regardless of value;
   }
 }
 
@@ -51,6 +51,4 @@ const visitedTerritoriesProxy = new Proxy(
 );
 const visitedTerritoriesStore = reactive(visitedTerritoriesProxy);
 
-export {
-  visitedTerritoriesStore as visitedTerritories,
-};
+export { visitedTerritoriesStore as visitedTerritories };

@@ -1,41 +1,41 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
-import { visitedTerritories } from '../store/visited_territory_data';
-import PinComponent from './PinComponent.vue';
+  import { onMounted, ref, watch } from 'vue';
+  import { visitedTerritories } from '../store/visited_territory_data';
+  import PinComponent from './PinComponent.vue';
 
-import {default as map_svg} from '../api/map_svg';
-import {default as map_generic} from '../api/map_generic';
-import {default as map_canvas} from '../api/map_canvas';
+  import { default as map_svg } from '../api/map_svg';
+  import { default as map_generic } from '../api/map_generic';
+  import { default as map_canvas } from '../api/map_canvas';
 
-const MAP_TYPE = 'svg';
+  const MAP_TYPE = 'svg';
 
-const canvasElement = ref();
-const svgElement = ref();
+  const canvasElement = ref();
+  const svgElement = ref();
 
-onMounted(async () => {
+  onMounted(async () => {
+    const canvas = canvasElement.value;
+    const svg = svgElement.value;
 
-  const canvas = canvasElement.value;
-  const svg = svgElement.value;
+    const dataMap = await map_generic.loadJsonDataMap(map_generic.WORLD_MAP);
 
-  const dataMap = await map_generic.loadJsonDataMap(map_generic.WORLD_MAP);
+    let drawMap;
+    let drawElement;
+    if (MAP_TYPE === 'svg') {
+      drawMap = map_svg.drawMapOnSvg;
+      drawElement = svg;
+      canvas.parentNode.removeChild(canvas);
+    } else {
+      // if (MAP_TYPE === 'canvas')
+      drawMap = map_canvas.drawMapOnCanvas;
+      drawElement = canvas;
+      svg.parentNode.removeChild(svg);
+    }
 
-  let drawMap;
-  let drawElement;
-  if (MAP_TYPE === 'svg') {
-    drawMap = map_svg.drawMapOnSvg
-    drawElement = svg;
-    canvas.parentNode.removeChild(canvas);
-  } else { // if (MAP_TYPE === 'canvas')
-    drawMap = map_canvas.drawMapOnCanvas;
-    drawElement = canvas;
-    svg.parentNode.removeChild(svg);
-  }
-
-  drawMap(drawElement, dataMap);
-  watch(visitedTerritories, () => {
     drawMap(drawElement, dataMap);
+    watch(visitedTerritories, () => {
+      drawMap(drawElement, dataMap);
+    });
   });
-});
 </script>
 
 <template>
@@ -44,29 +44,27 @@ onMounted(async () => {
     <canvas
       ref="canvasElement"
       width="960"
-      height="600"
-    ></canvas>
+      height="600"></canvas>
     <svg
       ref="svgElement"
       width="960"
-      height="600"
-    ></svg>
+      height="600"></svg>
   </section>
 </template>
 
 <style scoped>
-#territory-map {
-  margin: 0 auto -3rem auto;
-  text-align: center;
-}
+  #territory-map {
+    margin: 0 auto -3rem auto;
+    text-align: center;
+  }
 
-#territory-map:has(.sticky) {
-  background: var(--color-dark-gray);
-  position: sticky;
-  top: 0;
-}
+  #territory-map:has(.sticky) {
+    background: var(--color-dark-gray);
+    position: sticky;
+    top: 0;
+  }
 
-#territory-map canvas {
-  padding: 0.5rem 0.5rem 2rem 0.5rem;
-}
+  #territory-map canvas {
+    padding: 0.5rem 0.5rem 2rem 0.5rem;
+  }
 </style>

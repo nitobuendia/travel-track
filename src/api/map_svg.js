@@ -1,4 +1,3 @@
-
 import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
 import { territoriesById } from '../store/territory_data';
@@ -8,9 +7,9 @@ import { default as map_generic } from './map_generic';
 const _SVG_NS_URI = 'http://www.w3.org/2000/svg';
 
 const drawFeatures = (svg, path, dataMap, dataFeature, attributes) => {
-  const dPath = dataFeature ?
-    path(topojson.feature(dataMap, dataFeature)) :
-    path(dataMap);
+  const dPath = dataFeature
+    ? path(topojson.feature(dataMap, dataFeature))
+    : path(dataMap);
 
   const pathElement = document.createElementNS(_SVG_NS_URI, 'path');
   pathElement.setAttribute('d', dPath);
@@ -35,8 +34,8 @@ const drawTerritories = (svg, path, dataMap, dataFeature, attributes) => {
   const geometryType = dataFeature.type;
   for (const geometry of dataFeature.geometries) {
     const territoryGeometry = {
-      'type': geometryType,
-      'geometries': [geometry],
+      type: geometryType,
+      geometries: [geometry],
     };
 
     const territoryAttributes = { ...attributes };
@@ -86,8 +85,8 @@ const drawMapOnSvg = (svg, dataMap) => {
   const path = d3_geo.geoPath().projection(projection);
 
   drawFeatures(svg, path, outline, null, {
-    'stroke': '#ffffff',
-    'fill': 'none',
+    stroke: '#ffffff',
+    fill: 'none',
   });
 
   const visitedDataMap = { ...dataMap.objects.countries };
@@ -95,7 +94,8 @@ const drawMapOnSvg = (svg, dataMap) => {
     const territory = territoriesById[geometry.id];
     if (!territory) {
       console.warn(
-        `Territory id ${geometry.id} not found in the territory list.`);
+        `Territory id ${geometry.id} not found in the territory list.`
+      );
       return false;
     }
     return !!visitedTerritories[territory.code];
@@ -114,7 +114,8 @@ const drawMapOnSvg = (svg, dataMap) => {
       const territory = territoriesById[geometry.id];
       if (!territory) {
         console.warn(
-          `Territory id ${geometry.id} not found in the territory list.`);
+          `Territory id ${geometry.id} not found in the territory list.`
+        );
         return true;
       }
       return !visitedTerritories[territory.code];
@@ -131,4 +132,4 @@ const drawMapOnSvg = (svg, dataMap) => {
 
 export default {
   drawMapOnSvg,
-}
+};

@@ -1,4 +1,3 @@
-
 import * as d3_geo from 'd3-geo';
 import * as topojson from 'topojson-client';
 import { territoriesById } from '../store/territory_data';
@@ -50,7 +49,8 @@ const drawMapOnCanvas = (canvas, dataMap) => {
     const territory = territoriesById[geometry.id];
     if (!territory) {
       console.warn(
-        `Territory id ${geometry.id} not found in the territory list.`);
+        `Territory id ${geometry.id} not found in the territory list.`
+      );
       return false;
     }
     return !!visitedTerritories[territory.code];
@@ -71,7 +71,8 @@ const drawMapOnCanvas = (canvas, dataMap) => {
       const territory = territoriesById[geometry.id];
       if (!territory) {
         console.warn(
-          `Territory id ${geometry.id} not found in the territory list.`);
+          `Territory id ${geometry.id} not found in the territory list.`
+        );
         return true;
       }
       return !visitedTerritories[territory.code];
@@ -90,4 +91,4 @@ const drawMapOnCanvas = (canvas, dataMap) => {
 
 export default {
   drawMapOnCanvas,
-}
+};
