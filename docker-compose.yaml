@@ -1,0 +1,8 @@
+services:
+  travel-track:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5173:3000
