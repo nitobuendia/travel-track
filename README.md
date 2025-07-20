@@ -6,6 +6,8 @@ which territories and percentage of the world you have been.
 Travel Track is a self-hosted tool, which puts you in control of your data and
 experience.
 
+![Travel Track Screenshot](./docs/screenshot-travel-track.png)
+
 ---
 
 ## Getting Started
