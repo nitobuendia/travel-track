@@ -1,8 +1,6 @@
 {
   "name": "track-map",
   "version": "0.0.0",
-  "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "dev-host": "vite --host",
@@ -36,5 +34,8 @@
     "start-server-and-test": "^2.0.3",
     "vite": "^5.2.8",
     "vitest": "^1.4.0"
+  },
+  "engines" : {
+    "node" : ">=24.0.0"
   }
 }
