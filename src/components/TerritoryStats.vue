@@ -46,6 +46,7 @@
   #territory-stats:has(.sticky) {
     position: sticky;
     top: 0;
+    z-index: 6000;
   }
 
   *:has(.sticky) + #territory-stats:has(.sticky) {

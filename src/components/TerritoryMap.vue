@@ -62,6 +62,7 @@
     background: var(--color-dark-gray);
     position: sticky;
     top: 0;
+    z-index: 5000;
   }
 
   #territory-map canvas {
