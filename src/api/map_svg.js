@@ -75,9 +75,12 @@ const drawMapOnSvg = (svg, dataMap) => {
 
   const outline = { type: 'Sphere' };
 
-  const width = parseInt(svg.getAttribute('width'));
+  const container = svg.parentElement;
+  const containerRect = container.getBoundingClientRect();
+  const width = containerRect.width;
   const projection = d3_geo.geoNaturalEarth1().fitWidth(width, outline);
   const height = map_generic.calculateCanvasHeight(projection, outline);
+
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
   svg.setAttribute('width', width);
   svg.setAttribute('height', height);
