@@ -13,23 +13,24 @@
   };
 
   const searchValue = ref('');
-  let filteredTerritories = ref(territoriesSet);
+  const filteredTerritories = ref(territoriesSet);
   watch(searchValue, async (newSearchValue) => {
     if (!newSearchValue) {
-      filteredTerritories = territoriesSet;
+      filteredTerritories.value = territoriesSet;
       return;
     }
-    filteredTerritories = new Set(Array.from(territoriesSet).filter(
+    filteredTerritories.value = new Set(Array.from(territoriesSet).filter(
       (t) => t.name.toLowerCase().includes(searchValue.value.toLowerCase())));
   });
 
   let lastRenderedLetter = '';
-  let currentInViewLetters = new Set();
-  const currentInViewLetter = ref('');
+  const currentInViewLetters = new Set();
+  let currentInViewLetter = ref('A');
 
   /** Processes letters in viewport to understand current letter in view. */
   const onLetterScroll = ([entry] /* : IntersectionObserverEntry[] */) => {
-    const letter = entry.target.id;
+    const letter = entry?.target?.id;
+    if (!letter) return;
     if (entry?.isIntersecting) {
       currentInViewLetters.add(letter);
     } else {
@@ -39,9 +40,8 @@
     if (currentInViewLetters.size > 0) {
       const sortedLetters = Array.from(currentInViewLetters).toSorted();
       const newCurrentLetter = sortedLetters[0];
-      if (currentInViewLetter.value != newCurrentLetter) {
+      if (currentInViewLetter?.value !== newCurrentLetter) {
         currentInViewLetter.value = newCurrentLetter;
-        console.log('parent', currentInViewLetter.value);
       }
     }
   };
