@@ -54,6 +54,12 @@
     z-index: 1000;
   }
 
+  @media only screen and ( (max-width: 1000px) or (max-height: 900px) ) {
+    #country-alphabet-menu {
+      display: none;
+    }
+  }
+
   a {
     color: var(--color-white);
     text-decoration: none;
