@@ -1,6 +1,5 @@
 <script setup>
-  // import { computed } from 'vue';
-  import { computed, nextTick, ref, watch } from 'vue';
+  import { ref, watch } from 'vue';
 
   const ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 
