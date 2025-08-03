@@ -2,8 +2,11 @@
   import { territoriesSet } from '../store/territory_data';
   import { visitedTerritories } from '../store/visited_territory_data';
   import { ref, watch } from 'vue';
+  import { vIntersectionObserver } from '@vueuse/components'
   import SearchBar from './SearchBar.vue';
+  import AlphabetMenu from './AlphabetMenu.vue';
 
+  /** Toggles visited territories to show as visited or non visited. */
   const toggleVisitedTerritory = (territoryCode) => {
     const visitedState = visitedTerritories[territoryCode];
     visitedTerritories[territoryCode] = !visitedState;
@@ -19,15 +22,48 @@
     filteredTerritories = new Set(Array.from(territoriesSet).filter(
       (t) => t.name.toLowerCase().includes(searchValue.value.toLowerCase())));
   });
+
+  let lastRenderedLetter = '';
+  let currentInViewLetters = new Set();
+  const currentInViewLetter = ref('');
+
+  /** Processes letters in viewport to understand current letter in view. */
+  const onLetterScroll = ([entry] /* : IntersectionObserverEntry[] */) => {
+    const letter = entry.target.id;
+    if (entry?.isIntersecting) {
+      currentInViewLetters.add(letter);
+    } else {
+      currentInViewLetters.delete(letter);
+    }
+
+    if (currentInViewLetters.size > 0) {
+      const sortedLetters = Array.from(currentInViewLetters).toSorted();
+      const newCurrentLetter = sortedLetters[0];
+      if (currentInViewLetter.value != newCurrentLetter) {
+        currentInViewLetter.value = newCurrentLetter;
+        console.log('parent', currentInViewLetter.value);
+      }
+    }
+  };
 </script>
 
 <template>
   <section id="territory-list">
     <SearchBar v-model:searchValue="searchValue" />
+    <AlphabetMenu v-model:currentInViewLetter="currentInViewLetter" />
     <template
       v-for="territory of territoriesSet"
       :key="territory.id">
       <template v-if="filteredTerritories.has(territory)">
+        <template v-if="territory.name[0].toUpperCase() !== lastRenderedLetter">
+          <h2
+            :id="territory.name[0].toUpperCase()"
+            v-intersection-observer="onLetterScroll"
+            class="territory-heading"
+            >
+            {{ lastRenderedLetter = territory.name[0].toUpperCase() }}
+          </h2>
+        </template>
         <div
           :id="`territory-${territory.code}`"
           class="territory"
@@ -64,6 +100,11 @@
 
   .territory:nth-child(odd) {
     background-color: var(--color-dark-gray-alternate);
+  }
+
+  .territory-heading {
+    padding: 1.5em 0 0.5em 0;
+    margin: -1em 0 0 0;
   }
 
   .territory-name {
