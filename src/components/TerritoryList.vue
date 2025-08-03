@@ -112,10 +112,13 @@
     padding: 1rem;
     margin-right: 2rem;
     max-width: 30rem;
+    vertical-align: middle;
   }
 
   .territory-visited-status {
     display: table-cell;
+    padding-left: 2rem;
+    vertical-align: middle;
     width: 12rem;
   }
 
