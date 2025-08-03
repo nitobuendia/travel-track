@@ -1,34 +1,50 @@
 <script setup>
   import { territoriesSet } from '../store/territory_data';
   import { visitedTerritories } from '../store/visited_territory_data';
+  import { ref, watch } from 'vue';
+  import SearchBar from './SearchBar.vue';
 
   const toggleVisitedTerritory = (territoryCode) => {
     const visitedState = visitedTerritories[territoryCode];
     visitedTerritories[territoryCode] = !visitedState;
   };
+
+  const searchValue = ref('');
+  let filteredTerritories = ref(territoriesSet);
+  watch(searchValue, async (newSearchValue) => {
+    if (!newSearchValue) {
+      filteredTerritories = territoriesSet;
+      return;
+    }
+    filteredTerritories = new Set(Array.from(territoriesSet).filter(
+      (t) => t.name.toLowerCase().includes(searchValue.value.toLowerCase())));
+  });
 </script>
 
 <template>
   <section id="territory-list">
+    <SearchBar v-model:searchValue="searchValue" />
     <template
       v-for="territory of territoriesSet"
       :key="territory.id">
-      <div
-        :id="`territory-${territory.code}`"
-        class="territory"
-        @click="toggleVisitedTerritory(territory.code)">
-        <span class="territory-name">{{ territory.name }}</span>
-        <span
-          v-if="visitedTerritories[territory.code]"
-          class="territory-visited-status visited"
-          >Visited</span
-        >
-        <span
-          v-else
-          class="territory-visited-status not-visited"
-          >Not Visited</span
-        >
-      </div>
+      <template v-if="filteredTerritories.has(territory)">
+        <div
+          :id="`territory-${territory.code}`"
+          class="territory"
+          @click="toggleVisitedTerritory(territory.code)">
+          <span class="territory-name">{{ territory.name }}</span>
+          <span
+            v-if="visitedTerritories[territory.code]"
+            class="territory-visited-status visited"
+            >Visited</span
+          >
+          <span
+            v-else
+            class="territory-visited-status not-visited"
+            >Not Visited</span
+          >
+        </div>
+      </template>
     </template>
   </section>
 </template>
